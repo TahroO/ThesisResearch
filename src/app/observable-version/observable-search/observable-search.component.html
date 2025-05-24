@@ -1,0 +1,13 @@
+<h3>Produktsuche (Observable)</h3>
+
+<input
+  type="text"
+  placeholder="Produktname eingeben"
+  (input)="onSearch($event)"
+/>
+
+<ul>
+  <li *ngFor="let product of filteredProducts$ | async">
+    {{ product.name }} – {{ product.category }} – {{ product.price }} €
+  </li>
+</ul>

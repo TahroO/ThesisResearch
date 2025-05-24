@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Item A", "category": "Elektronik", "price": 33, "available": true, "location": "Berlin" },
+  { "id": 2, "name": "Item B", "category": "Mode", "price": 24, "available": true, "location": "Leipzig" },
+  { "id": 3, "name": "Item C", "category": "Elektronik", "price": 42, "available": false, "location": "Dresden" },
+  { "id": 4, "name": "Item D", "category": "Haushalt", "price": 125, "available": true, "location": "Berlin" }
+]
