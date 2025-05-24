@@ -1,1 +1,12 @@
-<p>signal-search works!</p>
+<h3>Produktsuche (Signals)</h3>
+<input
+  type="text"
+  placeholder="Produktname eingeben"
+  [ngModel]="searchTermSignal()"
+  (ngModelChange)="searchTermSignal.set($event)"
+>
+<ul>
+  <li *ngFor="let product of filteredProducts()">
+    {{ product.name }} – {{ product.category }} – {{ product.price }} €
+  </li>
+</ul>

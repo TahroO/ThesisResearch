@@ -1,11 +1,32 @@
-import { Component } from '@angular/core';
+import {Component, computed, inject, signal} from '@angular/core';
+import {Product} from '../../model/product';
+import {ProductService} from '../../service/productService';
+import {NgForOf} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-signal-search',
-  imports: [],
+  imports: [
+    NgForOf,
+    FormsModule
+  ],
   templateUrl: './signal-search.component.html',
   styleUrl: './signal-search.component.css'
 })
 export class SignalSearchComponent {
+  private productService = inject(ProductService);
+  protected searchTermSignal = signal<string>("");
+  protected products = signal<Product[]>([]);
 
+  constructor() {
+    this.productService.getProducts().subscribe(products => {
+      this.products.set(products);
+    });
+  }
+
+  filteredProducts = computed(() => {
+    const term = this.searchTermSignal().toLowerCase();
+    return this.products().filter(product =>
+    product.name.toLowerCase().includes(term))
+  })
 }
