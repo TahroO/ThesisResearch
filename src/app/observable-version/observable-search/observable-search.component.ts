@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {BehaviorSubject, combineLatest, map, Observable, startWith} from 'rxjs';
+import {BehaviorSubject, combineLatest, map, Observable} from 'rxjs';
 import {Product} from '../../model/product';
 import {ProductService} from '../../service/productService';
 import {AsyncPipe, NgForOf} from '@angular/common';
