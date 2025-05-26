@@ -2,5 +2,9 @@
   { "id": 1, "name": "Item A", "category": "Elektronik", "price": 33, "available": true, "location": "Berlin" },
   { "id": 2, "name": "Item B", "category": "Mode", "price": 24, "available": true, "location": "Leipzig" },
   { "id": 3, "name": "Item C", "category": "Elektronik", "price": 42, "available": false, "location": "Dresden" },
-  { "id": 4, "name": "Item D", "category": "Haushalt", "price": 125, "available": true, "location": "Berlin" }
+  { "id": 4, "name": "Item D", "category": "Haushalt", "price": 125, "available": true, "location": "Berlin" },
+  { "id": 5, "name": "Item E", "category": "Haushalt", "price": 24, "available": true, "location": "Berlin" },
+  { "id": 6, "name": "Item FA", "category": "Mode", "price": 33, "available": false, "location": "Berlin" },
+  { "id": 7, "name": "Item GB", "category": "Haushalt", "price": 42, "available": true, "location": "Berlin" },
+  { "id": 8, "name": "Item HC", "category": "Mode", "price": 125, "available": false, "location": "Berlin" }
 ]

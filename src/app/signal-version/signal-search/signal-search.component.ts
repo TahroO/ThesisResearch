@@ -26,7 +26,7 @@ export class SignalSearchComponent {
       this.products.set(products);
       this.categories.set([...new Set(products.map(p => p.category))]);
     });
-  }
+  };
 
   protected filteredProducts = computed(() => {
     const term = this.searchTermSignal().toLowerCase();
@@ -35,5 +35,5 @@ export class SignalSearchComponent {
       (!this.availabilitySignal() || product.available) &&
       (this.categorySignal() === "" || product.category === this.categorySignal())
     )
-  })
+  });
 }
