@@ -17,27 +17,33 @@ import {FormsModule} from '@angular/forms';
 })
 export class ObservableSearchComponent implements OnInit {
   private productService = inject(ProductService);
-  private searchTermSubject = new BehaviorSubject<string>("");
+  protected searchTermSubject = new BehaviorSubject<string>("");
+  protected availabilitySubject = new BehaviorSubject<boolean>(false);
+  protected categorySubject = new BehaviorSubject<string>("");
   protected products$: Observable<Product[]> | undefined;
   protected filteredProducts$: Observable<Product[]> | undefined;
-  protected searchInput = "";
-  constructor() {
-  }
+  protected categories: string[] = [];
 
+  constructor() {};
+
+  // makes sure all data is available as this is async --> combineLatest
   ngOnInit(): void {
     this.products$ = this.productService.getProducts();
+    this.products$.subscribe(products => {
+      this.categories = [...new Set(products.map(p => p.category))];
+    });
     this.filteredProducts$ = combineLatest([
       this.products$,
-      this.searchTermSubject.pipe(startWith(""))
-    ]).pipe(map(([products, term]) =>
-        products.filter(product =>
-          product.name.toLowerCase().includes(term.toLowerCase())
+      this.searchTermSubject,
+      this.availabilitySubject,
+      this.categorySubject
+    ]).pipe(map(([products, term, onlyAvailable, selectedCategory]) =>
+        products.filter((product) =>
+          product.name.toLowerCase().includes(term.toLowerCase()) &&
+          (!onlyAvailable || product.available) &&
+          (selectedCategory === "" || product.category === selectedCategory)
         )
       )
     );
-  }
-
-  onSearch(searchTerm: string) {
-    this.searchTermSubject.next(searchTerm);
-  }
+  };
 }

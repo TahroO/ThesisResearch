@@ -16,17 +16,24 @@ import {FormsModule} from '@angular/forms';
 export class SignalSearchComponent {
   private productService = inject(ProductService);
   protected searchTermSignal = signal<string>("");
+  protected availabilitySignal = signal<boolean>(false);
+  protected categorySignal = signal<string>("");
   protected products = signal<Product[]>([]);
+  protected categories = signal<string[]>([]);
 
   constructor() {
     this.productService.getProducts().subscribe(products => {
       this.products.set(products);
+      this.categories.set([...new Set(products.map(p => p.category))]);
     });
   }
 
-  filteredProducts = computed(() => {
+  protected filteredProducts = computed(() => {
     const term = this.searchTermSignal().toLowerCase();
     return this.products().filter(product =>
-    product.name.toLowerCase().includes(term))
+    product.name.toLowerCase().includes(term) &&
+      (!this.availabilitySignal() || product.available) &&
+      (this.categorySignal() === "" || product.category === this.categorySignal())
+    )
   })
 }

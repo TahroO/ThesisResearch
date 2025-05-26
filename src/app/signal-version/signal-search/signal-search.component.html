@@ -5,8 +5,25 @@
   [ngModel]="searchTermSignal()"
   (ngModelChange)="searchTermSignal.set($event)"
 >
+<label>
+  <input
+    type="checkbox"
+    [ngModel]="availabilitySignal()"
+    (ngModelChange)= "availabilitySignal.set($event)"
+  >
+  Nur verfügbare Produkte
+</label>
+<select
+  id="category"
+  [ngModel]="categorySignal()"
+  (ngModelChange)="categorySignal.set($event)"
+>
+  <option value="">Alle Kategorien</option>
+  <option *ngFor="let cat of categories()" [value]="cat">{{ cat }}</option>
+</select>
 <ul>
   <li *ngFor="let product of filteredProducts()">
-    {{ product.name }} – {{ product.category }} – {{ product.price }} €
+    {{ product.name }} – {{ product.category }} – {{ product.price }} € –
+    {{ product.available ? 'Verfügbar' : 'Nicht verfügbar' }}
   </li>
 </ul>
