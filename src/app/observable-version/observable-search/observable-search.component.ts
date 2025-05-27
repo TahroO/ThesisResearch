@@ -1,5 +1,5 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {BehaviorSubject, combineLatest, map, Observable} from 'rxjs';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {BehaviorSubject, combineLatest, map, Observable, Subscription} from 'rxjs';
 import {Product} from '../../model/product';
 import {ProductService} from '../../service/productService';
 import {AsyncPipe, NgForOf} from '@angular/common';
@@ -15,8 +15,12 @@ import {FormsModule} from '@angular/forms';
   templateUrl: './observable-search.component.html',
   styleUrl: './observable-search.component.css'
 })
-export class ObservableSearchComponent implements OnInit {
+/**
+ * Represents an observable version of a product search component
+ */
+export class ObservableSearchComponent implements OnInit, OnDestroy {
   private productService = inject(ProductService);
+  private subscription = new Subscription();
 
   protected searchTerm = "";
   protected availability = false;
@@ -30,14 +34,16 @@ export class ObservableSearchComponent implements OnInit {
   protected filteredProducts$: Observable<Product[]> | undefined;
   protected categories: string[] = [];
 
-  constructor() {};
+  constructor() {
+  };
 
   // makes sure all data is available as this is async --> combineLatest
   ngOnInit(): void {
     this.products$ = this.productService.getProducts();
-    this.products$.subscribe(products => {
+    const subscribedProducts = this.products$.subscribe(products => {
       this.categories = [...new Set(products.map(p => p.category))];
     });
+    this.subscription.add(subscribedProducts);
     this.filteredProducts$ = combineLatest([
       this.products$,
       this.appliedSearchTerm,
@@ -45,7 +51,7 @@ export class ObservableSearchComponent implements OnInit {
       this.appliedCategory
     ]).pipe(
       map(([products, term, onlyAvailable, selectedCategory]) => {
-        console.warn(`filteredProducts$ Observable recomputed`);
+        console.log(`filteredProducts$ Observable recomputed`);
         return products.filter(product =>
           product.name.toLowerCase().includes(term.toLowerCase()) &&
           (!onlyAvailable || product.available) &&
@@ -54,7 +60,11 @@ export class ObservableSearchComponent implements OnInit {
       })
     );
   }
-  applyFilter() {
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  protected applyFilter() {
     this.appliedSearchTerm.next(this.searchTerm);
     this.appliedAvailability.next(this.availability);
     this.appliedCategory.next(this.category);
