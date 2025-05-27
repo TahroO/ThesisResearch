@@ -17,9 +17,15 @@ import {FormsModule} from '@angular/forms';
 })
 export class ObservableSearchComponent implements OnInit {
   private productService = inject(ProductService);
-  protected searchTermSubject = new BehaviorSubject<string>("");
-  protected availabilitySubject = new BehaviorSubject<boolean>(false);
-  protected categorySubject = new BehaviorSubject<string>("");
+
+  protected searchTerm = "";
+  protected availability = false;
+  protected category = "";
+
+  protected appliedSearchTerm = new BehaviorSubject<string>("");
+  protected appliedAvailability = new BehaviorSubject<boolean>(false);
+  protected appliedCategory = new BehaviorSubject<string>("");
+
   protected products$: Observable<Product[]> | undefined;
   protected filteredProducts$: Observable<Product[]> | undefined;
   protected categories: string[] = [];
@@ -34,16 +40,23 @@ export class ObservableSearchComponent implements OnInit {
     });
     this.filteredProducts$ = combineLatest([
       this.products$,
-      this.searchTermSubject,
-      this.availabilitySubject,
-      this.categorySubject
-    ]).pipe(map(([products, term, onlyAvailable, selectedCategory]) =>
-        products.filter((product) =>
+      this.appliedSearchTerm,
+      this.appliedAvailability,
+      this.appliedCategory
+    ]).pipe(
+      map(([products, term, onlyAvailable, selectedCategory]) => {
+        console.warn(`filteredProducts$ Observable recomputed`);
+        return products.filter(product =>
           product.name.toLowerCase().includes(term.toLowerCase()) &&
           (!onlyAvailable || product.available) &&
           (selectedCategory === "" || product.category === selectedCategory)
-        )
-      )
+        );
+      })
     );
+  }
+  applyFilter() {
+    this.appliedSearchTerm.next(this.searchTerm);
+    this.appliedAvailability.next(this.availability);
+    this.appliedCategory.next(this.category);
   };
 }
