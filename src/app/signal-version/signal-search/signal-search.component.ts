@@ -32,7 +32,7 @@ export class SignalSearchComponent {
       this.products.set(products);
       this.categories.set([...new Set(products.map(p => p.category))]);
     });
-  }
+  };
 
   protected filteredProducts = computed(() => {
     const term = this.appliedSearchTerm().toLowerCase();
