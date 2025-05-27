@@ -2,26 +2,24 @@
 <input
   type="text"
   placeholder="Produktname eingeben"
-  [ngModel]="searchTermSubject | async"
-  (ngModelChange)="searchTermSubject.next($event)"
+  [(ngModel)]="searchTerm"
 />
 <label>
   <input
     type="checkbox"
-    [ngModel]="availabilitySubject | async"
-    (ngModelChange) ="availabilitySubject.next($event)"
+    [(ngModel)]="availability"
   />
   Nur verfügbare Produkte
 </label>
 <label for="category">Kategorie:</label>
 <select
   id="category"
-  [ngModel]="categorySubject | async"
-  (ngModelChange)="categorySubject.next($event)"
+  [(ngModel)]="category"
 >
   <option value="">Alle Kategorien</option>
   <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
 </select>
+<button (click)="applyFilter()">Filtern</button>
 <ul>
   <li *ngFor="let product of filteredProducts$ | async">
     {{ product.name }} – {{ product.category }} – {{ product.price }} € –

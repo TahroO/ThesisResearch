@@ -15,9 +15,15 @@ import {FormsModule} from '@angular/forms';
 })
 export class SignalSearchComponent {
   private productService = inject(ProductService);
-  protected searchTermSignal = signal<string>("");
-  protected availabilitySignal = signal<boolean>(false);
-  protected categorySignal = signal<string>("");
+
+  searchTerm = "";
+  availability = false;
+  category = "";
+
+  protected appliedSearchTerm = signal<string>("");
+  protected appliedAvailability = signal<boolean>(false);
+  protected appliedCategory = signal<string>("");
+
   protected products = signal<Product[]>([]);
   protected categories = signal<string[]>([]);
 
@@ -29,11 +35,18 @@ export class SignalSearchComponent {
   };
 
   protected filteredProducts = computed(() => {
-    const term = this.searchTermSignal().toLowerCase();
+    const term = this.appliedSearchTerm().toLowerCase();
+    console.warn(`filteredProducts Signal recomputed`);
     return this.products().filter(product =>
     product.name.toLowerCase().includes(term) &&
-      (!this.availabilitySignal() || product.available) &&
-      (this.categorySignal() === "" || product.category === this.categorySignal())
+      (!this.appliedAvailability() || product.available) &&
+      (this.appliedCategory() === "" || product.category === this.appliedCategory())
     )
   });
+
+  applyFilter() {
+    this.appliedSearchTerm.set(this.searchTerm);
+    this.appliedAvailability.set(this.availability);
+    this.appliedCategory.set(this.category);
+  };
 }
