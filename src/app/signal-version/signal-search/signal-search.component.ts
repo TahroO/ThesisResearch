@@ -1,4 +1,4 @@
-import {Component, computed, inject, signal} from '@angular/core';
+import {Component, computed, effect, inject, signal} from '@angular/core';
 import {Product} from '../../model/product';
 import {ProductService} from '../../service/productService';
 import {NgForOf} from '@angular/common';
@@ -19,25 +19,25 @@ import {toSignal} from '@angular/core/rxjs-interop';
  */
 export class SignalSearchComponent {
   private productService = inject(ProductService);
-
   // local states ui-bindings
-  protected searchTerm = "";
-  protected availability = false;
-  protected category = "";
-
+  protected searchTerm: string = "";
+  protected availability: boolean = false;
+  protected category: string = "";
   // applied filter states after button event
   protected appliedSearchTerm = signal<string>("");
   protected appliedAvailability = signal<boolean>(false);
   protected appliedCategory = signal<string>("");
+  // counter for executions of recomputation after event
+  protected counter = signal<number>(0);
+
   constructor() {
   }
 
-  // gathered data resources from http request
+  // gathered data resources from asynchronous http request
   protected products = toSignal(
     this.productService.getProducts(),
     {initialValue: [] as Product[]}
   );
-
   protected categories = computed(() => [
     ...new Set(this.products().map(p => p.category))
   ]);
@@ -45,7 +45,6 @@ export class SignalSearchComponent {
   // this triggers once on initialization and afterward only if a filter signal changed
   protected filteredProducts = computed(() => {
     const term = this.appliedSearchTerm().toLowerCase();
-    console.log(`filteredProducts Signal recomputed`);
     return this.products().filter(product =>
       product.name.toLowerCase().includes(term) &&
       (!this.appliedAvailability() || product.available) &&
@@ -59,4 +58,12 @@ export class SignalSearchComponent {
     this.appliedAvailability.set(this.availability);
     this.appliedCategory.set(this.category);
   };
+
+  // triggers effect when computed is reevaluated - only for evaluation
+  protected countComputed = effect(() => {
+    this.filteredProducts();
+    this.counter.update(v => v + 1);
+    console.log(`filteredProducts Signal recomputed ${this.counter()} times`);
+  });
+
 }

@@ -1,28 +1,28 @@
-<h3>Produktsuche (Observable)</h3>
-<input
-  type="text"
-  placeholder="Produktname eingeben"
-  [(ngModel)]="searchTerm"
-/>
-<label>
-  <input
-    type="checkbox"
-    [(ngModel)]="availability"
-  />
-  Nur verfügbare Produkte
-</label>
-<label for="category">Kategorie:</label>
-<select
-  id="category"
-  [(ngModel)]="category"
->
-  <option value="">Alle Kategorien</option>
-  <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
-</select>
-<button (click)="applyFilter()">Filtern</button>
-<ul>
-  <li *ngFor="let product of filteredProducts$ | async">
-    {{ product.name }} – {{ product.category }} – {{ product.price }} € –
-    {{ product.available ? 'Verfügbar' : 'Nicht verfügbar' }}
-  </li>
-</ul>
+<div class="productSearch-box">
+  <h3>Produktsuche (Observables)</h3>
+  <div class="filter-box">
+    <input type="text" placeholder="Produktname eingeben" [(ngModel)]="searchTerm">
+    <label>
+      <input type="checkbox" [(ngModel)]="availability">
+      Nur verfügbare Produkte
+    </label>
+    <select [(ngModel)]="category">
+      <option value="">Alle Kategorien</option>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+    <button (click)="applyFilter()">Filtern</button>
+  </div>
+  <div class="counter-box">
+    <p>Observable Evaluation Counter <span class="counter-value">{{counter}}</span></p>
+  </div>
+  <div class="productList-box">
+    <div *ngFor="let product of filteredProducts$ | async" class="product-box">
+      <strong>{{ product.name }}</strong><br>
+      Kategorie: {{ product.category }}<br>
+      Preis: {{ product.price }} €<br>
+      <span [class.available]="product.available" [class.unavailable]="!product.available">
+        {{ product.available ? 'Verfügbar' : 'Nicht verfügbar' }}
+      </span>
+    </div>
+  </div>
+</div>
