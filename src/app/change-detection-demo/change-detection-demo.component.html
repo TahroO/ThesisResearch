@@ -1,0 +1,20 @@
+<p>change-detection-demo works!</p>
+<div class="cd-demo-root">
+  <h2>Change Detection Demo</h2>
+  <div class="mode-switch">
+    <label>
+      <input type="radio" [(ngModel)]="mode" value="observable" /> Observable
+    </label>
+    <label>
+      <input type="radio" [(ngModel)]="mode" value="signal" /> Signal
+    </label>
+  </div>
+  <app-tile-container [valueA]="tileAValue" [valueB]="tileBValue" labelA="Tile A" labelB="Tile B"></app-tile-container>
+  <app-tile-container [valueA]="tileCValue" [valueB]="tileDValue" labelA="Tile C" labelB="Tile D"></app-tile-container>
+  <div class="button-row">
+    <button (click)="updateTileA()">Update A</button>
+    <button (click)="updateTileB()">Update B</button>
+    <button (click)="updateTileC()">Update C</button>
+    <button (click)="updateTileD()">Update D</button>
+  </div>
+</div>

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {ComparisonComponent} from './comparison/comparison.component';
+import {ChangeDetectionDemoComponent} from './change-detection-demo/change-detection-demo.component';
 
 @Component({
   selector: 'app-root',
-  imports: [ComparisonComponent],
+  imports: [ComparisonComponent, ChangeDetectionDemoComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
