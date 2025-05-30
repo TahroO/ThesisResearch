@@ -1,7 +1,6 @@
 import {Component, signal} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {FormsModule} from '@angular/forms';
-import {TileComponent} from './tile-component/tile-component';
 import {TileContainerComponent} from './tile-container/tile-container.component';
 
 @Component({
