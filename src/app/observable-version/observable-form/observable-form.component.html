@@ -1,1 +1,35 @@
 <p>observable-form works!</p>
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <label>
+    Name:
+    <input formControlName="username" />
+    <span *ngIf="(userNameStatus$ | async) as status">{{ status }}</span>
+  </label>    <label>
+    Name:
+    <input formControlName="firstName" />
+  </label>
+  <label>
+    Name:
+    <input formControlName="lastName" />
+  </label>
+  <label>
+    E-Mail:
+    <input formControlName="emailAddress" />
+    <span *ngIf="(emailStatus$ | async) as status">{{ status }}</span>
+  </label>
+  <label>
+    Adresse:
+    <input formControlName="address" />
+  </label>
+  <label>
+    Telefon:
+    <input formControlName="phoneNumber" />
+  </label>
+  <button type="submit" [disabled]="userForm.invalid">Registrieren</button>
+</form>
+
+<p>Formular-Status: {{ formFieldStatus$ | async }}</p>
+<ul>
+  <li *ngFor="let user of userSearchResults">{{ user.userName }} ({{ user.eMailAddress }})</li>
+</ul>
+
