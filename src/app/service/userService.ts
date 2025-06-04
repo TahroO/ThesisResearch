@@ -2,6 +2,7 @@ import {User} from '../model/user';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
+import {FormGroup} from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +37,9 @@ export class UserService {
         user.userName.toLowerCase().includes(name.toLowerCase())
       ))
     );
+  }
+
+  addUser(userForm: FormGroup) {
+    alert("User " + userForm.get("username")?.value + " would have been added! (No POST available)");
   }
 }

@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {debounceTime, filter, map, Observable, startWith, Subject, switchMap, takeUntil} from 'rxjs';
+import {debounceTime, elementAt, filter, map, Observable, startWith, Subject, switchMap, takeUntil} from 'rxjs';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {User} from '../../model/user';
 import {UserService} from '../../service/userService';
@@ -17,7 +17,7 @@ import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
   templateUrl: './observable-form.component.html',
   styleUrl: './observable-form.component.css'
 })
-export class ObservableFormComponent implements OnInit, OnDestroy{
+export class ObservableFormComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private userService = inject(UserService);
@@ -33,15 +33,16 @@ export class ObservableFormComponent implements OnInit, OnDestroy{
   constructor(private formBuilder: FormBuilder) {
     this.userForm = this.formBuilder.group({
 
-      username: ["", [Validators.required, Validators.minLength(3)]],
-      firstName: ["", [Validators.required]],
-      lastName: ["", [Validators.required]],
-      emailAddress: ["", [Validators.required, Validators.email]],
-      address: ["", Validators.required],
-      phoneNumber: ["", [Validators.required, Validators.pattern(/^[0-9]+$/)]],
+        username: ["", [Validators.required, Validators.minLength(3)]],
+        firstName: ["", [Validators.required]],
+        lastName: ["", [Validators.required]],
+        emailAddress: ["", [Validators.required, Validators.email]],
+        address: ["", Validators.required],
+        phoneNumber: ["", [Validators.required, Validators.pattern(/^[0-9]+$/)]],
 
       }
     )
+    // Todo block submit when name is taken
     this.userNameStatus$ = this.userForm.controls['username'].valueChanges.pipe(
       debounceTime(300),
       filter(value => value.length > 2),
@@ -50,6 +51,7 @@ export class ObservableFormComponent implements OnInit, OnDestroy{
       startWith('')
     );
 
+    // Todo block submit when email is taken
     this.emailStatus$ = this.userForm.controls['emailAddress'].valueChanges.pipe(
       debounceTime(300),
       filter(value => value.includes('@')),
@@ -58,12 +60,11 @@ export class ObservableFormComponent implements OnInit, OnDestroy{
       startWith('')
     );
 
-    // Formularstatus
-    this.formFieldStatus$ = this.userForm.statusChanges.pipe(startWith(this.userForm.status));
-
+    // Todo block submit
+    this.formFieldStatus$ = this.userForm.statusChanges.pipe(
+      startWith(this.userForm.status)
+    );
   }
-
-
 
   ngOnInit(): void {
     this.userForm.controls['username'].valueChanges.pipe(
@@ -77,6 +78,16 @@ export class ObservableFormComponent implements OnInit, OnDestroy{
   }
 
   onSubmit() {
+
+    // Todo there is an issue with validation - register is possible even when name is taken!
+    if (this.userForm.valid) {
+
+      this.userService.addUser(this.userForm)
+
+    } else {
+
+      alert('Bitte alle Felder korrekt ausfüllen.');
+    }
 
 
   }

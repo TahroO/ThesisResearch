@@ -1,15 +1,16 @@
 <p>observable-form works!</p>
 <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
   <label>
-    Name:
+    Username:
     <input formControlName="username" />
     <span *ngIf="(userNameStatus$ | async) as status">{{ status }}</span>
-  </label>    <label>
-    Name:
+  </label>
+  <label>
+    first Name:
     <input formControlName="firstName" />
   </label>
   <label>
-    Name:
+    last Name:
     <input formControlName="lastName" />
   </label>
   <label>
