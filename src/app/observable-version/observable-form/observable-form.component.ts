@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {debounceTime, elementAt, filter, map, Observable, startWith, Subject, switchMap, takeUntil} from 'rxjs';
+import {debounceTime, filter, map, Observable, startWith, Subject, switchMap, takeUntil} from 'rxjs';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {User} from '../../model/user';
 import {UserService} from '../../service/userService';
@@ -24,6 +24,8 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
 
   protected userForm: FormGroup;
 
+  protected users: Observable<User[]>;
+
   protected userNameStatus$: Observable<string>;
   protected emailStatus$: Observable<string>;
   protected formFieldStatus$: Observable<string>;
@@ -31,22 +33,22 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
   protected userSearchResults: User[] | undefined;
 
   constructor(private formBuilder: FormBuilder) {
+    this.users = this.userService.getUsers();
     this.userForm = this.formBuilder.group({
-
         username: ["", [Validators.required, Validators.minLength(3)]],
         firstName: ["", [Validators.required]],
         lastName: ["", [Validators.required]],
         emailAddress: ["", [Validators.required, Validators.email]],
         address: ["", Validators.required],
         phoneNumber: ["", [Validators.required, Validators.pattern(/^[0-9]+$/)]],
-
       }
-    )
+    );
+
     // Todo block submit when name is taken
     this.userNameStatus$ = this.userForm.controls['username'].valueChanges.pipe(
       debounceTime(300),
       filter(value => value.length > 2),
-      switchMap(value => this.userService.isNameTaken(value)),
+      switchMap(value => this.isNameTaken(value)),
       map(isTaken => (isTaken ? 'Name existiert bereits' : 'ok')),
       startWith('')
     );
@@ -55,7 +57,7 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
     this.emailStatus$ = this.userForm.controls['emailAddress'].valueChanges.pipe(
       debounceTime(300),
       filter(value => value.includes('@')),
-      switchMap(value => this.userService.isEmailTaken(value)),
+      switchMap(value => this.isEmailTaken(value)),
       map(isTaken => (isTaken ? 'E-Mail existiert bereits' : 'ok')),
       startWith('')
     );
@@ -70,32 +72,49 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
     this.userForm.controls['username'].valueChanges.pipe(
       debounceTime(400),
       filter(value => value.length > 2),
-      switchMap(value => this.userService.searchUsers(value)),
+      switchMap(value => this.searchUsers(value)),
       takeUntil(this.destroy$)
     ).subscribe(results => {
       this.userSearchResults = results;
     });
   }
-
   onSubmit() {
 
     // Todo there is an issue with validation - register is possible even when name is taken!
     if (this.userForm.valid) {
-
       this.userService.addUser(this.userForm)
-
     } else {
-
       alert('Bitte alle Felder korrekt ausfüllen.');
     }
+  }
+
+  isNameTaken(name: string) {
+    return this.users.pipe(
+      map(users =>
+        users.some(user => user.userName.toLowerCase() === name.toLowerCase())
+      )
+    );
+  }
 
 
+  isEmailTaken(address: string) {
+    return this.users.pipe(
+      map(users =>
+        users.some(user => user.eMailAddress.toLowerCase() === address.toLowerCase())
+      )
+    );
+  }
+
+  searchUsers(name: string): Observable<User[]> {
+    return this.users.pipe(
+      map(users => users.filter(user =>
+        user.userName.toLowerCase().includes(name.toLowerCase())
+      ))
+    );
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-
 }
