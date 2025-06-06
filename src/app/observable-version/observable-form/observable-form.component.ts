@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {debounceTime, filter, map, Observable, startWith, Subject, switchMap, takeUntil} from 'rxjs';
+import {combineLatest, debounceTime, filter, map, Observable, startWith, Subject, switchMap, takeUntil} from 'rxjs';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {User} from '../../model/user';
 import {UserService} from '../../service/userService';
@@ -30,10 +30,15 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
   protected emailStatus$: Observable<string>;
   protected formFieldStatus$: Observable<string>;
 
+  protected isEmailTaken$: Observable<boolean>;
+  protected isUserNameTaken$: Observable<boolean>;
+  protected canSubmit$: Observable<boolean>;
+
   protected userSearchResults: User[] | undefined;
 
   constructor(private formBuilder: FormBuilder) {
     this.users = this.userService.getUsers();
+
     this.userForm = this.formBuilder.group({
         username: ["", [Validators.required, Validators.minLength(3)]],
         firstName: ["", [Validators.required]],
@@ -44,29 +49,42 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
       }
     );
 
-    // Todo block submit when name is taken
-    this.userNameStatus$ = this.userForm.controls['username'].valueChanges.pipe(
+    this.isUserNameTaken$ = this.userForm.controls['username'].valueChanges.pipe(
       debounceTime(300),
       filter(value => value.length > 2),
       switchMap(value => this.isNameTaken(value)),
-      map(isTaken => (isTaken ? 'Name existiert bereits' : 'ok')),
-      startWith('')
+      startWith(false)
     );
 
-    // Todo block submit when email is taken
-    this.emailStatus$ = this.userForm.controls['emailAddress'].valueChanges.pipe(
+    this.isEmailTaken$ = this.userForm.controls['emailAddress'].valueChanges.pipe(
       debounceTime(300),
       filter(value => value.includes('@')),
       switchMap(value => this.isEmailTaken(value)),
-      map(isTaken => (isTaken ? 'E-Mail existiert bereits' : 'ok')),
-      startWith('')
+      startWith(false)
     );
 
-    // Todo block submit
     this.formFieldStatus$ = this.userForm.statusChanges.pipe(
       startWith(this.userForm.status)
     );
-  }
+
+    this.userNameStatus$ = this.isUserNameTaken$.pipe(
+      map(isTaken => isTaken ? 'Name existiert bereits' : 'ok')
+    );
+
+    this.emailStatus$ = this.isEmailTaken$.pipe(
+      map(isTaken => isTaken ? 'Email existiert bereits' : 'ok')
+    );
+
+    this.canSubmit$ = combineLatest([
+      this.formFieldStatus$,
+      this.isUserNameTaken$,
+      this.isEmailTaken$
+    ]).pipe(
+      map(([formStatus, isUserNameTaken, isEmailTaken]) =>
+        formStatus === 'VALID' && !isUserNameTaken && !isEmailTaken
+      )
+    );
+  };
 
   ngOnInit(): void {
     this.userForm.controls['username'].valueChanges.pipe(
@@ -77,16 +95,14 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
     ).subscribe(results => {
       this.userSearchResults = results;
     });
-  }
+  };
   onSubmit() {
-
-    // Todo there is an issue with validation - register is possible even when name is taken!
     if (this.userForm.valid) {
       this.userService.addUser(this.userForm)
     } else {
       alert('Bitte alle Felder korrekt ausfüllen.');
     }
-  }
+  };
 
   isNameTaken(name: string) {
     return this.users.pipe(
@@ -94,8 +110,7 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
         users.some(user => user.userName.toLowerCase() === name.toLowerCase())
       )
     );
-  }
-
+  };
 
   isEmailTaken(address: string) {
     return this.users.pipe(
@@ -103,7 +118,7 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
         users.some(user => user.eMailAddress.toLowerCase() === address.toLowerCase())
       )
     );
-  }
+  };
 
   searchUsers(name: string): Observable<User[]> {
     return this.users.pipe(
@@ -111,10 +126,10 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
         user.userName.toLowerCase().includes(name.toLowerCase())
       ))
     );
-  }
+  };
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
+  };
 }
