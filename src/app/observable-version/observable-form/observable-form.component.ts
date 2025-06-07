@@ -30,7 +30,7 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
   protected emailStatus$: Observable<string>;
   protected formFieldStatus$: Observable<string>;
 
-  protected isEmailTaken$: Observable<boolean>;
+  protected isEmailAddressTaken$: Observable<boolean>;
   protected isUserNameTaken$: Observable<boolean>;
   protected canSubmit$: Observable<boolean>;
 
@@ -56,7 +56,7 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
       startWith(false)
     );
 
-    this.isEmailTaken$ = this.userForm.controls['emailAddress'].valueChanges.pipe(
+    this.isEmailAddressTaken$ = this.userForm.controls['emailAddress'].valueChanges.pipe(
       debounceTime(300),
       filter(value => value.includes('@')),
       switchMap(value => this.isEmailTaken(value)),
@@ -71,14 +71,14 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
       map(isTaken => isTaken ? 'Name existiert bereits' : 'ok')
     );
 
-    this.emailStatus$ = this.isEmailTaken$.pipe(
+    this.emailStatus$ = this.isEmailAddressTaken$.pipe(
       map(isTaken => isTaken ? 'Email existiert bereits' : 'ok')
     );
 
     this.canSubmit$ = combineLatest([
       this.formFieldStatus$,
       this.isUserNameTaken$,
-      this.isEmailTaken$
+      this.isEmailAddressTaken$
     ]).pipe(
       map(([formStatus, isUserNameTaken, isEmailTaken]) =>
         formStatus === 'VALID' && !isUserNameTaken && !isEmailTaken
@@ -96,6 +96,7 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
       this.userSearchResults = results;
     });
   };
+
   onSubmit() {
     if (this.userForm.valid) {
       this.userService.addUser(this.userForm)
