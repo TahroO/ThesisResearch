@@ -1,1 +1,52 @@
-<p>signal-form works!</p>
+<div class="registrationForm-box">
+  <h3>Registrierung (Signals)</h3>
+  <div class="form-box">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+      <label>
+        Username:
+        <input formControlName="username" />
+        <span *ngIf="userNameStatus() as status">{{ status }}</span>
+      </label>
+
+      <label>
+        first Name:
+        <input formControlName="firstName" />
+      </label>
+
+      <label>
+        last Name:
+        <input formControlName="lastName" />
+      </label>
+
+      <label>
+        E-Mail:
+        <input formControlName="emailAddress" />
+        <span *ngIf="emailStatus() as status">{{ status }}</span>
+      </label>
+
+      <label>
+        Adresse:
+        <input formControlName="address" />
+      </label>
+
+      <label>
+        Telefon:
+        <input formControlName="phoneNumber" />
+      </label>
+
+      <button type="submit" [disabled]="!canSubmit()">Registrieren</button>
+    </form>
+  </div>
+
+  <div class="status-box">
+    <p>Formular-Status: <span>{{ formFieldStatus() }}</span></p>
+    <p>Counter: <span>{{ counter() }}</span></p>
+  </div>
+
+  <div class="userList-box">
+    <ul>
+      <li *ngFor="let user of userSearchResults">{{ user.userName }} ist bereits vergeben!</li>
+    </ul>
+  </div>
+</div>
+

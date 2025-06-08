@@ -66,4 +66,6 @@ export class SignalSearchComponent {
     console.log(`filteredProducts Signal recomputed ${this.counter()} times`);
   });
 
+
+
 }

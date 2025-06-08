@@ -1,0 +1,91 @@
+.registrationForm-box {
+  max-width: 520px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fafbfc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  font-family: Arial, sans-serif;
+}
+
+.form-box {
+  background: #fff;
+  padding: 12px 10px;
+  border-radius: 6px;
+  margin-bottom: 18px;
+}
+
+.form-box label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.form-box input {
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 1em;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.form-box span {
+  margin-left: 8px;
+  font-size: 0.85em;
+  font-weight: normal;
+}
+
+
+.form-box button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  background: #4f6cff;
+  color: #fff;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+
+.form-box button:hover {
+  background: #3e54c1;
+}
+
+.form-box button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.status-box {
+  background: #e3e8f0;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 18px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.userList-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.userList-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.userList-box li {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 1em;
+  color: #b71c1c;
+  font-weight: 500;
+}
