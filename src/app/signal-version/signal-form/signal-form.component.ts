@@ -97,7 +97,7 @@ export class SignalFormComponent {
     // reactive button state evaluation
     this.canSubmit = computed(() => {
       return this.formFieldStatus() === 'VALID' && !this.isUserNameTaken() && !this.isEmailAddressTaken()
-    })
+    });
   };
 
   // button event execution

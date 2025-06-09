@@ -1,59 +1,69 @@
-# ThesisResearch
+# ThesisResearch – Vergleich von Observables und Signalen in Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.13.
+Dieses Repository enthält den Beispielcode und die Prototypen zur Bachelorarbeit   
 
-## Development server
+*„Reaktive Architekturen in Angular:
+Chancen und Herausforderungen beim Einsatz von Signalen im Vergleich zu Observables im Kontext moderner Webentwicklung“.*
 
-To start a local development server, run:
+## Inhalt
 
-```bash
-ng serve
-```
+Das Repository stellt zwei funktional identische Prototypen bereit, die typische Anwendungsfälle reaktiver Architekturen abbilden:
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+1. **Produktsuch- und Filterkomponente**
+  - Implementierung mit Observables (`src/app/observable-version/observable-search.component.ts`)
+  - Implementierung mit Signalen (`src/app/signal-version/signal-search.component.ts`)
 
-## Code scaffolding
+2. **Formular-Komponente mit Echtzeit-Validierung**
+  - Implementierung mit Observables (`src/app/observable-version/observable-form.component.ts`)
+  - Implementierung mit Signalen (`src/app/signal-version/signal-form.component.ts`)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Der jeweilige zugrunde liegende Datensatz ist in JSON-Dateien im Verzeichnis `public/data` hinterlegt und wird zur Laufzeit über einen Service geladen.
 
-```bash
-ng generate component component-name
-```
+## Zielsetzung
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Das Ziel dieses Vergleichs ist es, die Potenziale und Herausforderungen von Signalen als neuem Ansatz zur synchronen Statusverwaltung gegenüber der klassischen Observable-Technologie zu evaluieren.
 
-```bash
-ng generate --help
-```
+Die Evaluation erfolgt anhand der folgenden Metriken:
 
-## Building
+- **Komplexität und Verständlichkeit**
+- **Wartbarkeit und Änderbarkeit**
+- **Synchrones vs. asynchrones Verhalten**
+- **Performance und Aktualisierungsverhalten**
+- **Lernaufwand für Entwickler**
+- **Potenzielle Auswirkungen auf Entwicklungszeit und Kosten**
 
-To build the project run:
+## Rahmen der Nutzerstudie
 
-```bash
-ng build
-```
+Im Rahmen der Nutzerstudie werden Angular-Entwickler eingeladen, den Code beider Varianten zu analysieren und auf Basis der genannten Metriken zu bewerten.  
+Die Umfrage zielt darauf ab, die Wahrnehmung und Einschätzung von Entwicklern zu den beiden Ansätzen zu erfassen und deren Einfluss auf die Arbeit im Front-End-Entwicklungsprozess kritisch zu beleuchten.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Teilnehmende finden die relevanten Komponenten und Services in den folgenden  Verzeichnissen:
 
-## Running unit tests
+- **Observable-Version:**
+  - `observable-version/observable-search.component.ts`
+  - `observable-version/observable-form.component.ts`
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+- **Signal-Version:**
+  - `signal-version/signal-search.component.ts`
+  - `signal-version/signal-form.component.ts`
 
-```bash
-ng test
-```
+- **Services und Models:**
+  - `service/productService.ts`
+  - `service/userService.ts`
+  - `model/product.ts`
+  - `model/user.ts`
 
-## Running end-to-end tests
+Die Vergleiche und Bewertungen sollen sich ausschließlich auf die Logik und Struktur der jeweiligen Implementierung konzentrieren. Style- und Design-Elemente sind minimalistisch gehalten und nicht Gegenstand der Untersuchung.
 
-For end-to-end (e2e) testing, run:
+## Hinweise zur Nutzung
 
-```bash
-ng e2e
-```
+- Die Implementierungen sind für Angular 19 optimiert.
+- Der Datenaustausch erfolgt über simulierte JSON-Dateien; keine persistente Speicherung.
+- Zum Starten der Anwendung ist eine Standard-Installation von Angular-CLI erforderlich (`npm install`, `ng serve`).
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+**Fragen zur Nutzerstudie oder zum Code?**  
+Bitte wende dich direkt an den Autor.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
