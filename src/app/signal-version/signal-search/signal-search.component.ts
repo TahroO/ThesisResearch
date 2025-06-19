@@ -34,29 +34,29 @@ export class SignalSearchComponent {
   }
 
   // gathered data resources from asynchronous http request
-  protected products = toSignal(
-    this.productService.getProducts(),
+  protected products = toSignal( // operator
+    this.productService.getProducts(), // logicStep
     {initialValue: [] as Product[]}
   );
-  protected categories = computed(() => [
-    ...new Set(this.products().map(p => p.category))
+  protected categories = computed(() => [ // operator
+    ...new Set(this.products().map(p => p.category)) // logicStep
   ]);
 
   // this triggers once on initialization and afterward only if a filter signal changed
-  protected filteredProducts = computed(() => {
-    const term = this.appliedSearchTerm().toLowerCase();
-    return this.products().filter(product =>
-      product.name.toLowerCase().includes(term) &&
-      (!this.appliedAvailability() || product.available) &&
-      (this.appliedCategory() === "" || product.category === this.appliedCategory())
+  protected filteredProducts = computed(() => { // operator
+    const term = this.appliedSearchTerm().toLowerCase(); // logicStep
+    return this.products().filter(product => // logicStep
+      product.name.toLowerCase().includes(term) && // logicStep
+      (!this.appliedAvailability() || product.available) && // logicStep
+      (this.appliedCategory() === "" || product.category === this.appliedCategory()) // logicStep
     )
   });
 
   // applies filter values from template - set() only executes after internal equal() === false
   protected applyFilter() {
-    this.appliedSearchTerm.set(this.searchTerm);
-    this.appliedAvailability.set(this.availability);
-    this.appliedCategory.set(this.category);
+    this.appliedSearchTerm.set(this.searchTerm); // logicStep
+    this.appliedAvailability.set(this.availability); // logicStep
+    this.appliedCategory.set(this.category); // logicStep
   };
 
   // triggers effect when computed is reevaluated - only for evaluation
@@ -65,7 +65,4 @@ export class SignalSearchComponent {
     this.counter.update(v => v + 1);
     console.log(`filteredProducts Signal recomputed ${this.counter()} times`);
   });
-
-
-
 }

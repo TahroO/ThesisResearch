@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, debounceTime, filter, map, Observable, startWith, Subject, switchMap, takeUntil} from 'rxjs';
+import {combineLatest, debounceTime, filter, map, Observable, startWith, Subject, switchMap, takeUntil} from 'rxjs'; // external dep 9x
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {User} from '../../model/user';
 import {UserService} from '../../service/userService';
@@ -20,7 +20,7 @@ import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
 /**
  * Represents an observable version of a reactive registration form with extended validation
  */
-export class ObservableFormComponent implements OnInit, OnDestroy {
+export class ObservableFormComponent implements OnInit, OnDestroy { // interface 2x
   private userService = inject(UserService);
   private destroy$ = new Subject<void>();
   protected userForm: FormGroup;
@@ -41,9 +41,9 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
 
   constructor(private formBuilder: FormBuilder) {
     // initialize user collection via http-request - lazy observable
-    this.users = this.userService.getUsers();
+    this.users = this.userService.getUsers(); // logicStep
     // initialize form fields
-    this.userForm = this.formBuilder.group({
+    this.userForm = this.formBuilder.group({ // logicStep
         username: ["", [Validators.required, Validators.minLength(3)]],
         firstName: ["", [Validators.required]],
         lastName: ["", [Validators.required]],
@@ -54,50 +54,50 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
     );
   };
 
-  ngOnInit(): void {
+  ngOnInit(): void { // life cycle hook
     // reactive field evaluation of user input
     this.isUserNameTaken$ = this.userForm.controls['username'].valueChanges.pipe(
-      debounceTime(300),
-      filter(value => value.length > 2),
-      switchMap(value => this.isNameTaken(value)),
-      startWith(false)
+      debounceTime(300), // operator
+      filter(value => value.length > 2), // logicStep // operator
+      switchMap(value => this.isNameTaken(value)), // logicStep // operator
+      startWith(false) // operator
     );
     this.isEmailAddressTaken$ = this.userForm.controls['emailAddress'].valueChanges.pipe(
-      debounceTime(300),
-      filter(value => value.includes('@')),
-      switchMap(value => this.isEmailTaken(value)),
-      startWith(false)
+      debounceTime(300), // operator
+      filter(value => value.includes('@')), // logicStep // operator
+      switchMap(value => this.isEmailTaken(value)), // logicStep // operator
+      startWith(false) // operator
     );
     this.formFieldStatus$ = this.userForm.statusChanges.pipe(
-      startWith(this.userForm.status)
+      startWith(this.userForm.status) // operator
     );
 
     // reactive visual user feedback according to state
     this.userNameStatus$ = this.isUserNameTaken$.pipe(
-      map(isTaken => isTaken ? 'Name existiert bereits' : 'ok')
+      map(isTaken => isTaken ? 'Name existiert bereits' : 'ok') // logicStep // operator
     );
     this.emailStatus$ = this.isEmailAddressTaken$.pipe(
-      map(isTaken => isTaken ? 'Email existiert bereits' : 'ok')
+      map(isTaken => isTaken ? 'Email existiert bereits' : 'ok') // logicStep // operator
     );
     // search results observable version
     this.userForm.controls['username'].valueChanges.pipe(
-      debounceTime(400),
-      filter(value => value.length > 2),
-      switchMap(value => this.searchUsers(value)),
-      takeUntil(this.destroy$)
-    ).subscribe(results => {
-      this.userSearchResults = results;
+      debounceTime(400), // operator
+      filter(value => value.length > 2), // logicStep // operator
+      switchMap(value => this.searchUsers(value)), // logicStep // operator
+      takeUntil(this.destroy$) // operator
+    ).subscribe(results => { // subscription
+      this.userSearchResults = results; // logicStep
     });
 
     // reactive button state evaluation
-    this.canSubmit$ = combineLatest([
+    this.canSubmit$ = combineLatest([ // operator
       this.formFieldStatus$,
       this.isUserNameTaken$,
       this.isEmailAddressTaken$
     ]).pipe(
-      map(([formStatus, isUserNameTaken, isEmailTaken]) => {
+      map(([formStatus, isUserNameTaken, isEmailTaken]) => { // operator
         this.countCanSubmitEvaluation();
-          return formStatus === 'VALID' && !isUserNameTaken && !isEmailTaken
+          return formStatus === 'VALID' && !isUserNameTaken && !isEmailTaken // logicStep
         }
       )
     );
@@ -105,40 +105,40 @@ export class ObservableFormComponent implements OnInit, OnDestroy {
 
   // button event execution
   protected onSubmit() {
-    if (this.userForm.valid) {
-      this.userService.addUser(this.userForm)
+    if (this.userForm.valid) { // logicStep
+      this.userService.addUser(this.userForm) // logicStep
     } else {
-      alert('Bitte alle Felder korrekt ausfüllen.');
+      alert('Bitte alle Felder korrekt ausfüllen.'); // logicStep
     }
   };
 
   // helper methods for evaluation
   protected isNameTaken(name: string) {
     return this.users.pipe(
-      map(users =>
-        users.some(user => user.userName.toLowerCase() === name.toLowerCase())
+      map(users => // operator
+        users.some(user => user.userName.toLowerCase() === name.toLowerCase()) // logicStep
       )
     );
   };
   protected isEmailTaken(address: string) {
     return this.users.pipe(
-      map(users =>
-        users.some(user => user.eMailAddress.toLowerCase() === address.toLowerCase())
+      map(users => // operator
+        users.some(user => user.eMailAddress.toLowerCase() === address.toLowerCase()) // logicStep
       )
     );
   };
   protected searchUsers(name: string): Observable<User[]> {
     return this.users.pipe(
-      map(users => users.filter(user =>
-        user.userName.toLowerCase().includes(name.toLowerCase())
+      map(users => users.filter(user => // operator // logicStep
+        user.userName.toLowerCase().includes(name.toLowerCase()) // logicStep
       ))
     );
   };
 
   // cleanup - prevent memory leaks - after component is destroyed
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  ngOnDestroy(): void { // life cycle hook
+    this.destroy$.next(); // logicStep
+    this.destroy$.complete(); // logicStep
   };
 
   // triggers counter when canSubmit is reevaluated - only for evaluation
