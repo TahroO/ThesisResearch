@@ -13,7 +13,7 @@ export class ProductService {
 
   getProducts():Observable<Product[]> {
 
-    return this.http.get<Product[]>('/data/products.json');
+    return this.http.get<Product[]>('assets/data/products.json');
 
   }
 
