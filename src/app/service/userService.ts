@@ -11,11 +11,11 @@ export class UserService {
 
   protected users: Observable<User[]>;
   constructor(private http: HttpClient) {
-    this.users = this.http.get<User[]>('/data/users.json')
+    this.users = this.http.get<User[]>('assets/data/users.json')
   }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>('/data/users.json');
+    return this.http.get<User[]>('assets/data/users.json');
   }
 
   addUser(userForm: FormGroup) {
