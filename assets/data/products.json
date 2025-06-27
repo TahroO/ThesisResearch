@@ -1,0 +1,10 @@
+[
+  { "id": 1, "name": "Stabmixer", "category": "Elektronik", "price": 33, "available": true, "location": "Berlin" },
+  { "id": 2, "name": "Shorts", "category": "Mode", "price": 24, "available": true, "location": "Leipzig" },
+  { "id": 3, "name": "Headset", "category": "Elektronik", "price": 42, "available": false, "location": "Dresden" },
+  { "id": 4, "name": "Luftreiniger", "category": "Haushalt", "price": 125, "available": true, "location": "Berlin" },
+  { "id": 5, "name": "Kochtopf 'Moria'", "category": "Haushalt", "price": 24, "available": true, "location": "Berlin" },
+  { "id": 6, "name": "Sandalen", "category": "Mode", "price": 33, "available": false, "location": "Berlin" },
+  { "id": 7, "name": "Kochtopf 'Bruchtal'", "category": "Haushalt", "price": 42, "available": true, "location": "Berlin" },
+  { "id": 8, "name": "Sneaker", "category": "Mode", "price": 125, "available": false, "location": "Berlin" }
+]
